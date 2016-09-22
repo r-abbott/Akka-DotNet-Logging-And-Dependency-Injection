@@ -39,6 +39,9 @@ namespace MovieStreaming.Common.Actors
             Context.ActorSelection("/user/Playback/PlaybackStatistics/MoviePlayCounter")
                 .Tell(new IncrementPlayCountMessage(movieTitle));
 
+            Context.ActorSelection("/user/Playback/PlaybackStatistics/TrendingMovies")
+                .Tell(new IncrementPlayCountMessage(movieTitle));
+
             Become(Playing);
         }
 

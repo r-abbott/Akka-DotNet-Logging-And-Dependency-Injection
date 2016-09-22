@@ -8,8 +8,9 @@ namespace MovieStreaming.Common.Actors
 {
     public class MoviePlayCounterActor : ReceiveActor
     {
-        private Dictionary<string, int> _moviePlayCounts;
-        private ILoggingAdapter _logger = Context.GetLogger();
+        private readonly ILoggingAdapter _logger = Context.GetLogger();
+
+        private readonly Dictionary<string, int> _moviePlayCounts;
 
         public MoviePlayCounterActor()
         {
@@ -20,26 +21,37 @@ namespace MovieStreaming.Common.Actors
 
         private void HandleIncrementMessage(IncrementPlayCountMessage message)
         {
-            if (!_moviePlayCounts.ContainsKey(message.MovieTitle))
+            if (_moviePlayCounts.ContainsKey(message.MovieTitle))
             {
-                _moviePlayCounts.Add(message.MovieTitle, 0);
-            }
-            _moviePlayCounts[message.MovieTitle]++;
+                var currentCount = _moviePlayCounts[message.MovieTitle];
 
-            // Simulated bugs
-            if(message.MovieTitle == "Partial Recoil")
+                currentCount++;
+
+                _moviePlayCounts[message.MovieTitle] = currentCount;
+            }
+            else
+            {
+                _moviePlayCounts.Add(message.MovieTitle, 1);
+            }
+
+            //  Simulated bugs
+            if (message.MovieTitle == "Partial Recoil")
             {
                 throw new SimulatedTerribleMovieException(message.MovieTitle);
             }
 
-            if(message.MovieTitle == "Partial Recoil 2")
+            if (message.MovieTitle == "Partial Recoil 2")
             {
                 throw new InvalidOperationException("Simulated exception");
             }
 
-            _logger.Debug(
-                $"MoviePlayerCounterActor '{message.MovieTitle}' has been watched {_moviePlayCounts[message.MovieTitle]} times");
+            _logger.Info("MoviePlayCounterActor {0} has been watched {1} times", message.MovieTitle, _moviePlayCounts[message.MovieTitle]);
+
         }
+
+
+
+        #region Lifecycle hooks
 
         protected override void PreStart()
         {
@@ -53,16 +65,17 @@ namespace MovieStreaming.Common.Actors
 
         protected override void PreRestart(Exception reason, object message)
         {
-            _logger.Debug($"MoviePlayCounterActor PreRestart because: {reason}");
+            _logger.Debug("MoviePlayCounterActor PreRestart because {0}", reason);
 
             base.PreRestart(reason, message);
         }
 
         protected override void PostRestart(Exception reason)
         {
-            _logger.Debug($"MoviePlayCounterActor PostRestart because: {reason}");
+            _logger.Debug("MoviePlayCounterActor PostRestart because {0}", reason);
 
             base.PostRestart(reason);
         }
+        #endregion
     }
 }

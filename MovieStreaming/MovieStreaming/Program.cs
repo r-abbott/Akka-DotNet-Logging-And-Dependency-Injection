@@ -1,7 +1,11 @@
 ﻿using Akka.Actor;
+using Akka.DI.AutoFac;
+using Akka.DI.Core;
+using Autofac;
 using MovieStreaming.Common;
 using MovieStreaming.Common.Actors;
 using MovieStreaming.Common.Messages;
+using MovieStreaming.Common.Statistics;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +18,17 @@ namespace MovieStreaming
 
         static void Main(string[] args)
         {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<SimpleTrendingMovieAnalyzer>().As<ITrendingMovieAnalyzer>();
+            builder.RegisterType<TrendingMoviesActor>();
+
+            var container = builder.Build();
+
             MovieStreamingActorSystem = ActorSystem.Create("MovieStreamingActorSystem");
+
+            IDependencyResolver resolver = new AutoFacDependencyResolver(container, MovieStreamingActorSystem);
+
             MovieStreamingActorSystem.ActorOf(Props.Create<PlaybackActor>(), "Playback");
 
             do

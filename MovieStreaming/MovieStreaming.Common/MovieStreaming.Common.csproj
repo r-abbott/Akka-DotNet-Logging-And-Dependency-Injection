@@ -34,6 +34,10 @@
       <HintPath>..\packages\Akka.1.1.2\lib\net45\Akka.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Akka.DI.Core, Version=1.1.2.29, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.Core.1.1.2\lib\net45\Akka.DI.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -52,9 +56,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Statistics\ITrendingMovieAnalyzer.cs" />
     <Compile Include="Actors\MoviePlayCounterActor.cs" />
     <Compile Include="Actors\PlaybackActor.cs" />
     <Compile Include="Actors\PlaybackStatisticsActor.cs" />
+    <Compile Include="Statistics\SimpleTendingMovieAnalyzer.cs" />
+    <Compile Include="Actors\TrendingMoviesActor.cs" />
     <Compile Include="Actors\UserActor.cs" />
     <Compile Include="Actors\UserCoordinatorActor.cs" />
     <Compile Include="ColorConsole.cs" />

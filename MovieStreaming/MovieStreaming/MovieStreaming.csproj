@@ -41,8 +41,20 @@
       <HintPath>..\packages\Akka.1.1.2\lib\net45\Akka.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Akka.DI.AutoFac, Version=1.0.8.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.AutoFac.1.0.8\lib\net45\Akka.DI.AutoFac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Akka.DI.Core, Version=1.0.8.24, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.DI.Core.1.0.8\lib\net45\Akka.DI.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Akka.Logger.NLog, Version=1.1.1.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Akka.Logger.NLog.1.1.1\lib\net45\Akka.Logger.NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.ProtocolBuffers, Version=2.4.1.555, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
