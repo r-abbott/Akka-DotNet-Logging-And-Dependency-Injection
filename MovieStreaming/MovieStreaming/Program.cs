@@ -14,10 +14,7 @@ namespace MovieStreaming
 
         static void Main(string[] args)
         {
-            ColorConsole.WriteLineGray("Creating MovieStreamingActorSystem");
             MovieStreamingActorSystem = ActorSystem.Create("MovieStreamingActorSystem");
-            Thread.Sleep(500);
-            ColorConsole.WriteLineGray("Creating actor supervisory hierarchy");
             MovieStreamingActorSystem.ActorOf(Props.Create<PlaybackActor>(), "Playback");
 
             do

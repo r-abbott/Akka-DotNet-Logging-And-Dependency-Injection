@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System;
 using MovieStreaming.Common.Messages;
+using Akka.Event;
 
 namespace MovieStreaming.Common.Actors
 {
     public class MoviePlayCounterActor : ReceiveActor
     {
         private Dictionary<string, int> _moviePlayCounts;
+        private ILoggingAdapter _logger = Context.GetLogger();
 
         public MoviePlayCounterActor()
         {
-            ColorConsole.WriteMagenta("MoviePlayCounterActor constructor executing");
-
             _moviePlayCounts = new Dictionary<string, int>();
 
             Receive<IncrementPlayCountMessage>(message => HandleIncrementMessage(message));
@@ -26,40 +26,41 @@ namespace MovieStreaming.Common.Actors
             }
             _moviePlayCounts[message.MovieTitle]++;
 
-            if(_moviePlayCounts[message.MovieTitle] > 3)
-            {
-                throw new SimulatedCorruptStateException();
-            }
-
+            // Simulated bugs
             if(message.MovieTitle == "Partial Recoil")
             {
-                throw new SimulatedTerribleMovieException();
+                throw new SimulatedTerribleMovieException(message.MovieTitle);
             }
 
-            ColorConsole.WriteMagenta(
+            if(message.MovieTitle == "Partial Recoil 2")
+            {
+                throw new InvalidOperationException("Simulated exception");
+            }
+
+            _logger.Debug(
                 $"MoviePlayerCounterActor '{message.MovieTitle}' has been watched {_moviePlayCounts[message.MovieTitle]} times");
         }
 
         protected override void PreStart()
         {
-            ColorConsole.WriteMagenta("MoviePlayCounterActor PreStart");
+            _logger.Debug("MoviePlayCounterActor PreStart");
         }
 
         protected override void PostStop()
         {
-            ColorConsole.WriteMagenta("MoviePlayCounterActor PostStop");
+            _logger.Debug("MoviePlayCounterActor PostStop");
         }
 
         protected override void PreRestart(Exception reason, object message)
         {
-            ColorConsole.WriteMagenta($"MoviePlayCounterActor PreRestart because: {reason}");
+            _logger.Debug($"MoviePlayCounterActor PreRestart because: {reason}");
 
             base.PreRestart(reason, message);
         }
 
         protected override void PostRestart(Exception reason)
         {
-            ColorConsole.WriteMagenta($"MoviePlayCounterActor PostRestart because: {reason}");
+            _logger.Debug($"MoviePlayCounterActor PostRestart because: {reason}");
 
             base.PostRestart(reason);
         }

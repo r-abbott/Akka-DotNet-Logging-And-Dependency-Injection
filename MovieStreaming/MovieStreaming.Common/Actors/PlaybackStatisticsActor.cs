@@ -1,10 +1,13 @@
 ﻿using Akka.Actor;
+using Akka.Event;
 using System;
 
 namespace MovieStreaming.Common.Actors
 {
     public class PlaybackStatisticsActor : ReceiveActor
     {
+        private readonly ILoggingAdapter _logger = Context.GetLogger();
+
         public PlaybackStatisticsActor()
         {
             Context.ActorOf(Props.Create<MoviePlayCounterActor>(), "MoviePlayCounter");
@@ -15,15 +18,19 @@ namespace MovieStreaming.Common.Actors
             return new OneForOneStrategy(
                 exception =>
                 {
-                    if (exception is SimulatedCorruptStateException)
+                    if (exception is ActorInitializationException)
                     {
+                        _logger.Error(exception, "PlaybackStatisticsActor supervisor strategy stopping child due to ActorInitializationException");
                         return Directive.Restart;
                     }
                     if (exception is SimulatedTerribleMovieException)
                     {
+                        var terribleMovieEx = (SimulatedTerribleMovieException)exception;
+                        _logger.Warning($"PlaybackStatisticsActor supervisor strategy resuming child due to terrible movie '{terribleMovieEx.MovieTitle}'.");
                         return Directive.Resume;
                     }
 
+                    _logger.Error(exception, "PlaybackStatisticsActor supervisor strategy restarting child due to unexpected exception");
                     return Directive.Restart;
                 }
                 );
@@ -31,24 +38,24 @@ namespace MovieStreaming.Common.Actors
 
         protected override void PreStart()
         {
-            ColorConsole.WriteLineGreen("PlaybackStatisticsActor PreStart");
+            _logger.Debug("PlaybackStatisticsActor PreStart");
         }
 
         protected override void PostStop()
         {
-            ColorConsole.WriteLineGreen("PlaybackStatisticsActor PostStop");
+            _logger.Debug("PlaybackStatisticsActor PostStop");
         }
 
         protected override void PreRestart(Exception reason, object message)
         {
-            ColorConsole.WriteLineGreen($"PlaybackStatisticsActor PreRestart because: {reason}");
+            _logger.Debug($"PlaybackStatisticsActor PreRestart because: {reason}");
 
             base.PreRestart(reason, message);
         }
 
         protected override void PostRestart(Exception reason)
         {
-            ColorConsole.WriteLineGreen($"PlaybackStatisticsActor PostRestart because: {reason}");
+            _logger.Debug($"PlaybackStatisticsActor PostRestart because: {reason}");
 
             base.PostRestart(reason);
         }

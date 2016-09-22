@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace MovieStreaming.Common.Actors
 {
     [Serializable]
     internal class SimulatedTerribleMovieException : Exception
     {
-        public SimulatedTerribleMovieException()
-        {
-        }
+        public string MovieTitle { get; private set; }
 
-        public SimulatedTerribleMovieException(string message) : base(message)
+        public SimulatedTerribleMovieException(string movieTitle) : base($"{movieTitle} is a terrible movie")
         {
-        }
-
-        public SimulatedTerribleMovieException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected SimulatedTerribleMovieException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            MovieTitle = movieTitle;
         }
     }
 }
